@@ -2,6 +2,10 @@
 resource "azurerm_resource_group" "pdey" {
   name     = "pdey-test"
   location = "West Europe"
+
+  tags = {
+    team = "Engineering"
+  }
 }
 
 # Create a virtual network within the resource group
