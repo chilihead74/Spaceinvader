@@ -1,7 +1,10 @@
 # Create a resource group
 resource "azurerm_resource_group" "robrg" {
   name     = "spaceinvaders"
-  location = "West Europe"
+  location = "francecentral"
+   tags = {
+    owner = "robert.messner@redbull.com"
+  }
 }
 
 # Create a virtual network within the resource group
