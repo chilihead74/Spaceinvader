@@ -16,7 +16,7 @@ resource "azurerm_linux_virtual_machine" "mainframe" {
   location            = azurerm_resource_group.pdey.location
   size                = "Standard_F2"
   admin_username      = "adminuser"
-  admin_password      = "?Sup3rS3cureP4a$$w0rd"
+  admin_password      = azurerm_key_vault_secret.mainframe-rootpw.value
   disable_password_authentication = false
   network_interface_ids = [
     azurerm_network_interface.mainframe.id,
@@ -33,4 +33,16 @@ resource "azurerm_linux_virtual_machine" "mainframe" {
     sku       = "22_04-lts"
     version   = "latest"
   }
+}
+
+resource "azurerm_key_vault_secret" "mainframe-rootpw" {
+  name         = "mainframe-root-password"
+  value        = random_password.password.result
+  key_vault_id = azurerm_key_vault.accessdenied.id
+}
+
+resource "random_password" "password" {
+  length           = 16
+  special          = true
+  override_special = "!#$%&*()-_=+[]{}<>:?"
 }
