@@ -2,6 +2,11 @@
 resource "azurerm_resource_group" "pdey" {
   name     = "pdey-test"
   location = "West Europe"
+
+  tags = {
+    team = "Engineering"
+    owner = "p.no.spam.dey@redbull.com"
+  }
 }
 
 # Create a virtual network within the resource group
