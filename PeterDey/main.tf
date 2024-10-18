@@ -1,7 +1,7 @@
 # Create a resource group
 resource "azurerm_resource_group" "pdey" {
   name     = "pdey-test"
-  location = "West Europe"
+  location = "Australia Central"
 
   tags = {
     team = "Engineering"
@@ -15,4 +15,12 @@ resource "azurerm_virtual_network" "pdey" {
   resource_group_name = azurerm_resource_group.pdey.name
   location            = azurerm_resource_group.pdey.location
   address_space       = ["10.0.0.0/16"]
+}
+
+# Create a subnet
+resource "azurerm_subnet" "neuralnet" {
+  name                 = "neuralnet"
+  resource_group_name = azurerm_resource_group.pdey.name
+  virtual_network_name = azurerm_virtual_network.pdey.name
+  address_prefixes     = ["10.0.2.0/24"]
 }
