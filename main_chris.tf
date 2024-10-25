@@ -22,50 +22,30 @@ resource "azurerm_subnet" "example" {
   address_prefixes     = ["10.0.1.0/24"]
 }
 
-  # create a VM
-resource "azurerm_network_interface" "example" {
-  name                = "nic-christian"
-  location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group.example.name
-
-  ip_configuration {
-    name                          = "internal"
-    subnet_id                     = azurerm_subnet.example.id
-    private_ip_address_allocation = "Dynamic"
-    public_ip_address_id = azurerm_public_ip.example.id
-  }
-}
-
-resource "azurerm_public_ip" "example" {
-  name = "ip-public"
-  location            = azurerm_resource_group.example.location
-  allocation_method = "Dynamic"
-  resource_group_name = azurerm_resource_group.example.name
-}
+ module "Chris-VM" {
+source = "./modules/VM"
+admin_username = "admin"
+admin_password = "Admin1234!"
+disable_password_authentication = false
+vm_size = "Standard_F2"
+image_offer = "0001-com-ubuntu-server-jammy"
+image_sku = "22_04_lts"
+image_version = "latest"
+image_publisher = "Cononical"
+os_disk_name = "Disk1"
+computer_name = "MyComp"
+vm_name = "MyVM"
+resource_group_name = azurerm_resource_group.example.name
+subnet_id = azurerm_subnet.example.id
+location = azurerm_resource_group.example.location
+nic_name = "NIC01"
 
 
-resource "azurerm_linux_virtual_machine" "VM-Chris" {
-  name                = "vm-christian"
-  resource_group_name = azurerm_resource_group.example.name
-  location            = azurerm_resource_group.example.location
-  size                = "Standard_F2"
-  admin_username      = "adminuser"
-  admin_password = "Admin1234!"
-  disable_password_authentication = "false"
-  network_interface_ids = [
-    azurerm_network_interface.example.id,
-  ]
 
-  os_disk {
-    caching              = "ReadWrite"
-    storage_account_type = "Standard_LRS"
-  }
 
-  source_image_reference {
-    publisher = "Canonical"
-    offer     = "0001-com-ubuntu-server-jammy"
-    sku       = "22_04-lts"
-    version   = "latest"
-  }
+
+
+
+
 }
 
