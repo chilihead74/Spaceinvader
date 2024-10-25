@@ -1,5 +1,3 @@
-provider config with TF cloud reference
- 
 terraform {
   cloud {
     organization = "SpaceAgency"
