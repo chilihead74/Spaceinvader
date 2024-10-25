@@ -1,59 +1,47 @@
-# Create a resource group
-resource "azurerm_resource_group" "robrg" {
-  name     = "spaceinvaders"
-  location = "francecentral"
-   tags = {
-    owner = "robert.messner@redbull.com"
-  }
-}
-  resource "azurerm_network_interface" "interface1" {
-  name                = "Space-nic"
-  location            = azurerm_resource_group.robrg.location
-  resource_group_name = azurerm_resource_group.robrg.name
+module "Test-VM" {
+source = "./modules/VM"
+admin_username = "admin"
+admin_password = "Admin1234!"
+disable_password_authentication = false
+vm_size = "Standard_F2"
+image_offer = "0001-com-ubuntu-server-jammy"
+image_sku = "22_04_lts"
+image_version = "latest"
+image_publisher = "Cononical"
+os_disk_name = "Disk1"
+computer_name = "MyComp"
+vm_name = "MyVM"
+resource_group_name = azurerm_resource_group.Rob.name
+subnet_id = azurerm_subnet.subnet01.id
+location = azurerm_resource_group.Rob.location
+nic_name = "NIC01"
 
-  ip_configuration {
-    name                          = "internal"
-    subnet_id                     = azurerm_subnet.subnet1.id
-    private_ip_address_allocation = "Dynamic"
-  }
+
+
+
+
+
+
+
+}
+resource "azurerm_resource_group" "Rob" {
+  name     = "SpaceInvader"
+  location = "swedencentral"
 }
 
-# Create a virtual network within the resource group
-resource "azurerm_virtual_network" "spacenetwork" {
-  name                = "spacenetwork"
-  resource_group_name = azurerm_resource_group.robrg.name
-  location            = azurerm_resource_group.robrg.location
+resource "azurerm_virtual_network" "VNET" {
   address_space       = ["10.0.0.0/16"]
-}
-resource "azurerm_subnet" "subnet1" {
-  name                 = "subnet1"
-  resource_group_name  = azurerm_resource_group.robrg.name
-  virtual_network_name = azurerm_virtual_network.spacenetwork.name
-  address_prefixes     = ["10.0.3.0/24"]
-}
-resource "azurerm_linux_virtual_machine" "example" {
-  name                = "Space-VM"
-  resource_group_name = azurerm_resource_group.robrg.name
-  location            = azurerm_resource_group.robrg.location
-  size                = "Standard_F2"
-  admin_username      = "adminuser"
-  disable_password_authentication = false
-  admin_password = "Admin1234!"
-
-  network_interface_ids = [
-    azurerm_network_interface.interface1.id,
-  ]
-
-
-  os_disk {
-    caching              = "ReadWrite"
-    storage_account_type = "Standard_LRS"
+  name                = "VNET"
+  location            = azurerm_resource_group.Rob.location
+  resource_group_name = azurerm_resource_group.Rob.name
+  tags = {
+    "owner" = "michael.winzinger@redbull.com"
   }
+}
 
-  source_image_reference {
-    publisher = "Canonical"
-    offer     = "0001-com-ubuntu-server-jammy"
-    sku       = "22_04-lts"
-    version   = "latest"
-  }
+resource "azurerm_subnet" "subnet01" {
+  address_prefixes     = ["10.0.0.0/16"]
+  name                 = "SN01"
+  virtual_network_name = azurerm_virtual_network.VNET.name
+  resource_group_name  = azurerm_resource_group.Rob.name
 }
