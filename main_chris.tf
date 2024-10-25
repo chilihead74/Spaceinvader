@@ -44,7 +44,7 @@ resource "azurerm_public_ip" "example" {
 }
 
 
-resource "azurerm_linux_virtual_machine" "example" {
+resource "azurerm_linux_virtual_machine" "VM-Chris" {
   name                = "vm-christian"
   resource_group_name = azurerm_resource_group.example.name
   location            = azurerm_resource_group.example.location
